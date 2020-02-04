@@ -6,6 +6,8 @@ import org.apache.http.client.fluent.Request;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.FormatStyle;
+import java.util.Arrays;
+import java.util.Collections;
 
 public class Main {
     public static void main(String[] args) throws IOException {
@@ -19,8 +21,10 @@ public class Main {
         Gson mapper = new Gson();
         Player[] players = mapper.fromJson(bodyText, Player[].class);
         
+        Arrays.sort(players, Collections.reverseOrder());
+        
         LocalDateTime datetime = LocalDateTime.now();
-        System.out.println("Players from FIN " + datetime);
+        System.out.println(String.format("Players from FIN %1$td.%1$tm.%1$tY %1$tT", datetime));
         for (Player player : players) {
             if (player.getNationality().equals("FIN")) {
                 System.out.println(player);

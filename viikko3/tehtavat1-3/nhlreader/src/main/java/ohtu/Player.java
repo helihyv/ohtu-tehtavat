@@ -1,14 +1,13 @@
 
 package ohtu;
 
-public class Player {
+public class Player implements Comparable<Player>{
     private String name;
     private int assists;
     private int goals;
     private String team;
     private String nationality;
-    
-
+   
     public void setName(String name) {
         this.name = name;
     }
@@ -37,10 +36,6 @@ public class Player {
         this.team = team;
     }
 
-    public String getTeam() {
-        return team;
-    }
-
     public void setNationality(String nationality) {
         this.nationality = nationality;
     }
@@ -48,12 +43,22 @@ public class Player {
     public String getNationality() {
         return nationality;
     }
-
-    
     
     @Override
     public String toString() {
-        return name + " " + team + " goals " + goals + " assists " + assists;
+        return String.format("%1$-20s\t%2$s \t%3$3d + %4$3d = %5$3d", 
+                name, 
+                team, 
+                goals, 
+                assists, 
+                goals + assists
+        );
+
+    }
+
+    @Override
+    public int compareTo(Player t) {
+        return (this.goals + this.assists) - (t.getGoals() + t.getAssists());
     }
       
 }
