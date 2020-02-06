@@ -30,7 +30,7 @@ public class Stepdefs {
     
     @Then("user is logged in")
     public void userIsLoggedIn() {
-        pageHasContent("Ohtu Application main page");
+        loginSucceeded();
     }    
  
     @When("correct username {string} and incorrect password {string} are given")
@@ -61,9 +61,7 @@ public class Stepdefs {
     @Given("command new user is selected")
     public void commandNewUserIsSelected() {
 
-        driver.get(baseUrl);
-        WebElement element = driver.findElement(By.linkText("register new user"));
-        element.click();
+        selectCommandNewUser();
     }
 
     @When("a valid username {string} and password {string} and matching password confirmation are entered")
@@ -104,6 +102,42 @@ public class Stepdefs {
     ) {
         registerNewUser(username, password, passwordConfirmation);
     }
+    
+        @Given("user with username {string} with password {string} is successfully created")
+    public void userWithUsernameWithPasswordIsSuccessfullyCreated(String username, String password) {
+        
+        selectCommandNewUser();
+        registerNewUser(username, password, password);
+    }
+
+    @When("succesfully created username {string} and correct password {string} are entered")
+    public void succesfullyCreatedUsernameAndCorrectPasswordAreEntered(String username, String password) {
+
+        logInWith(username, password);
+    }
+
+    @Given("user with username {string} and password {string} is tried to be created")
+    public void userWithUsernameAndPasswordIsTriedToBeCreated(String username, String password) {
+        
+        selectCommandNewUser();
+        registerNewUser(username, password, password);
+    }
+
+    @When("credentials username {string} and password {string} that were used in the failed accout creation attempt are entered")
+    public void credentialsUsernameAndPasswordThatWereUsedInTheFailedAccoutCreationAttemptAreEntered(String username, String password) {
+        logInWith(username, password);
+    }
+
+    @Then("user is succesfully logged in")
+    public void userIsSuccesfullyLoggedIn() {
+        loginSucceeded();
+    }
+
+    @Then("login with non-existing user fails  and the error message is shown")
+    public void nonExistingUserIsNotLoggedInAndTheErrorMessageIsShown() {
+        loginFailedWithErrorMessage();
+    }
+
 
     
     @After
@@ -133,7 +167,7 @@ public class Stepdefs {
     }
     
     private void registerNewUser(String username, String password, String passwordConfirmation) {
-        
+               
         assertTrue(driver.getPageSource().contains("Create username and give password"));
         WebElement element = driver.findElement(By.name("username"));
         element.sendKeys(username);
@@ -143,6 +177,16 @@ public class Stepdefs {
         element.sendKeys(passwordConfirmation);
         element = driver.findElement(By.name("signup"));
         element.submit();
+    }
+    
+    private void loginSucceeded() {
+         pageHasContent("Ohtu Application main page");
+    }
+    
+    private void selectCommandNewUser() {
+        driver.get(baseUrl);
+        WebElement element = driver.findElement(By.linkText("register new user"));
+        element.click();
     }
     
 }
