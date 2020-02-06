@@ -40,19 +40,25 @@ public class Stepdefs {
     
     @Then("user is not logged in and error message is given")
     public void userIsNotLoggedInAndErrorMessageIsGiven() {
-        pageHasContent("invalid username or password");
-        pageHasContent("Give your credentials to login");
+        loginFailedWithErrorMessage();
     }    
     
     @When("username {string} and password {string} are given")
     public void usernameAndPasswordAreGiven(String username, String password) throws Throwable {
         logInWith(username, password);
     }   
-    
-    @Then("system will respond {string}")
-    public void systemWillRespond(String pageContent) throws Throwable {
-        assertTrue(driver.getPageSource().contains(pageContent));
+
+    @When("nonexisting username {string} and password {string} are given")
+    public void nonexistingUsernameAndPasswordAreGiven(String username, String password) {
+        logInWith(username, password);
     }
+
+    @Then("login fails and an error message is given")
+    public void loginFailsAndAnErrorMessageIsGiven() {
+        loginFailedWithErrorMessage();
+    }
+
+
     
     @After
     public void tearDown(){
@@ -73,5 +79,10 @@ public class Stepdefs {
         element.sendKeys(password);
         element = driver.findElement(By.name("login"));
         element.submit();  
-    } 
+    }
+    
+    private void loginFailedWithErrorMessage() {
+        pageHasContent("invalid username or password");
+        pageHasContent("Give your credentials to login");        
+    }
 }
