@@ -100,4 +100,60 @@ public class KauppaTest {
         
         verify(pankki).tilisiirto("Otso", 42, "98765", "33333-44455", 5); 
     }
+    
+    @Test
+    public void aloitaAsiointiNollaaEdellisenOstoksenTiedot() {
+        when(varasto.saldo(1)).thenReturn(10);
+        when(varasto.haeTuote(1)).thenReturn(new Tuote(1, "maito", 5));
+        
+        k.aloitaAsiointi();
+        k.lisaaKoriin(1);
+        k.aloitaAsiointi();
+        k.lisaaKoriin(1);
+        k.tilimaksu("Otso", "98765");
+        
+        verify(pankki).tilisiirto("Otso", 42, "98765", "33333-44455", 5);
+    }
+        
+    @Test
+    public void jokaiselleMaksutapahtumallePyydetaanUusiTilinumero() {
+        when(varasto.saldo(1)).thenReturn(10);
+        when(varasto.haeTuote(1)).thenReturn(new Tuote(1, "maito", 5));
+        
+        k.aloitaAsiointi();
+        k.lisaaKoriin(1);
+        k.tilimaksu("Meri", "56789");
+        
+        verify(viite, times(1)).uusi();
+        
+        k.aloitaAsiointi();
+        k.lisaaKoriin(1);
+        k.tilimaksu("Otso", "98765");
+        
+        verify(viite, times(2)).uusi();
+        
+        k.aloitaAsiointi();
+        k.lisaaKoriin(1);
+        k.tilimaksu("Alli", "13568");
+        
+        verify(viite, times(3)).uusi();
+        
+        
+
+    }
+
+    @Test
+    public void poistaKoristaPoistaaTuotteenOstoksesta() {
+        when(varasto.saldo(1)).thenReturn(10);
+        when(varasto.haeTuote(1)).thenReturn(new Tuote(1, "maito", 5));
+        
+        k.aloitaAsiointi();
+        k.lisaaKoriin(1);
+        k.poistaKorista(1);
+        k.lisaaKoriin(0);
+        k.tilimaksu("Otso", "98765");
+        
+        verify(pankki).tilisiirto("Otso", 42, "98765", "33333-44455", 5);   
+    }
+        
 }
