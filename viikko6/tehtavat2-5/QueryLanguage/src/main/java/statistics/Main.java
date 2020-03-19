@@ -23,5 +23,25 @@ public class Main {
     
         for (Player player : stats.matches(m2)) {
             System.out.println(player);
-        }}
+        }
+        System.out.println("");
+    
+        Matcher m3 = new Or(new HasAtLeast(20, "goals"), new HasAtLeast(20,"assists"));
+        
+        for (Player player : stats.matches(m3)) {
+            System.out.println(player);
+        }
+        
+        System.out.println("");
+    
+        Matcher m4 = new And(new HasAtLeast(20, "points"), new Or (
+                new PlaysIn("NYR"), 
+                new PlaysIn("NYI"), 
+                new PlaysIn("NJD")
+        ));
+        
+        for (Player player : stats.matches(m4)) {
+            System.out.println(player);
+        }
+    }
 }
